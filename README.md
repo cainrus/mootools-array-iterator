@@ -10,7 +10,7 @@ How to use
 ----------
 * Create array:
     
-    var collection = [1,2,3,4,5];
+        var collection = [1,2,3,4,5];
     
 * Create iterator( you can create a few instances ):
     var iterator = collection.iterator(options);
@@ -46,10 +46,10 @@ How to use
 
 Options of iterator
 -----------------
-* pit    - Allow to select null position, when iterating. Null position selected only
+* _pit_    - Allow to select null position, when iterating. Null position selected only
 when you create iterator or when you will select wrong index(like null, 'asd', NaN..),
 or when you will you use rewind method.
-* limits - Not allow to jump from zero index on the last and back again
+* _limits_ - Not allow to jump from zero index on the last and back again
 
 ##Example:
 
