@@ -9,7 +9,9 @@ And some more functionality.
 How to use
 ----------
 * Create array:
+    
     var collection = [1,2,3,4,5];
+    
 * Create iterator( you can create a few instances ):
     var iterator = collection.iterator(options);
 * Now you can iterate array:
