@@ -1,7 +1,34 @@
+/*
+---
+script: Array-iterator.js
+
+description: Advanced array iteration.
+
+license: MIT-style license.
+
+authors:
+ - Sergei Tarassov
+
+requires:
+  core/1.3: '*'
+
+provides: 
+ - Array.iterator
+ - Iterator
+ - Iterator.ref
+ - Iterator.key
+ - Iterator.rewind
+ - Iterator.reset
+ - Iterator.prev
+ - Iterator.next
+ - Iterator.end
+
+...
+*/
+
 (function(){
 
-
-// Iterator Common utilites
+// Iterator private utilites
 var Util = {
     uid : Date.now(),
     getUniqueId : function() {return (this.uid++).toString(36);},
@@ -17,21 +44,23 @@ var Util = {
 
 
 
-
+// Iterator Class
 var Iterator = new Class({
-    Implements: [Options],
-    options: {
-        pit    : true,
-        limits: false // limit pointer with positions which exists
-        //round: false // forbid to go by cyrcles
+    Implements  : [Options],
+    options     : {
+        pit         : true, // allow null-exit
+        limits      : false //
+        // TODO:
+        // 1. option pass: array, keys to pass.
+        // 2. option min: int, minimal key alowed
+        // 3. option max: int, maximum key alowed
 
     },
     initialize: function(ref, options){
         this.setOptions(options);
-        // private function, it returns unique ID
+        // Unique ID.
         var getUid = function(uid){return uid}.pass([Util.getUniqueId()]);
-        // link to same instance of array
-        // only get, no way to change\replace it
+        // Link to same instance of array.
         this.ref = function(){return this;}.bind(ref);
 
         // Position Setter
@@ -57,13 +86,13 @@ var Iterator = new Class({
     // Move cursor to the first position
     reset: function(){
         var key = this.jump(0);
-        return this.watch(key)[0];
+        return this.current(key);
     },
 
     // Move cursor out
     rewind: function(){
         var key =  this.jump(null);
-        return this.watch(key)[0];
+        return this.current(key);
     },
     end: function(){
         var key = null, length = this.ref().length;
@@ -71,7 +100,7 @@ var Iterator = new Class({
             key = length - 1;
         }
         key = this.jump(key);
-        return this.watch(key)[0];
+        return this.current(key);
     },
     next: function() {
         return this.slide(1);
@@ -83,12 +112,12 @@ var Iterator = new Class({
 
     // Return selected array value
     current: function(){
-            var key = this.key();
-            return this.watch(key)[0];
+        var key = (arguments.length) ? arguments[0] : this.key();
+        return (key === null) ? null : this.ref()[key];
     },
 
 
-
+    // Slide to
     slide: function(offset){
         var key = this.key(), length = this.ref().length;
         // if filled array and valid offset
@@ -131,20 +160,7 @@ var Iterator = new Class({
         }
 
         key = this.jump(key);
-        return this.watch(key)[0];
-    },
-
-
-    watch: function(indexes){
-        indexes = (typeof indexes === 'array') ? indexes : [indexes];
-        var i, value, values = [];
-        while (indexes.length) {
-            i = indexes.shift();
-            value = (i === null) ? null : this.ref()[i];
-            values.push(value);
-        }
-        return values;
-
+        return this.current(key);
     }
 
 });
@@ -157,3 +173,4 @@ Array.implement({
 
 
 })();
+
