@@ -7,6 +7,7 @@ And some more functionality.
 ![Screenshot](http://farm5.static.flickr.com/4149/5094127748_c6a3bc7d98_m.jpg)
 
 You can create new Lighthouse tickets here: <http://cainrus.lighthouseapp.com/projects/62133/mootools-array-iterator>
+Github: <http://github.com/cainrus/mootools-array-iterator/>
 
 Methods of iterator
 -----------------
@@ -23,9 +24,6 @@ Methods of iterator
 
 How to use
 ----------
-* You'll need an array with test data:
-
-	var collection = [1,2,3,4,5];
 
 * Create iterator( you can create a few instances ):
 
