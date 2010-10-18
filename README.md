@@ -9,7 +9,6 @@ And some more functionality.
 How to use
 ----------
 
-#JS
 /* create inventory for game */ 
 
 var Axe = $('Axe'), Potion = $('Potion'); MagicBook = $('MagicBook');
