@@ -8,9 +8,50 @@ And some more functionality.
 
 How to use
 ----------
+* Create array:
+    var collection = [1,2,3,4,5];
+* Create iterator( you can create a few instances ):
+    var iterator = collection.iterator(options);
+* Now you can iterate array:
+    console.log(iterator.next());    // 1
+    console.log(iterator.end());     // 5
+    console.log(iterator.prev());    // 4
+    console.log(iterator.reset());   // 1
+    console.log(iterator.slide(3));  // 4
+    console.log(iterator.slide(-2)); // 2
+    console.log(iterator.rewind());  // null
+* You can get array from iterator:
+    console.log(iterator.ref());     // [1,2,3,4,5]
+* Try to play with _pit_ option:
+    var collection = [1,2,3]
+    var iterator = collection.iterator({pit : true});
+    iterator.next();                 // 1
+    iterator.next();                 // 2
+    iterator.next();                 // 3
+    iterator.next();                 // null
+    iterator.next();                 // 1
+    iterator.next();                 // 2
+    iterator.options.pit = false;
+    iterator.prev();                 // 1
+    iterator.prev();                 // 3
+* Try to play with _limits_ option:
+    iterator.options.limits = true;
+    iterator.jump(0);                // 1
+    iterator.next();                 // 2
+    iterator.next();                 // 3
+    iterator.next();                 // 3
+    iterator.next();                 // 3
+
+Options of iterator
+-----------------
+* pit    - Allow to select null position, when iterating. Null position selected only
+when you create iterator or when you will select wrong index(like null, 'asd', NaN..),
+or when you will you use rewind method.
+* limits - Not allow to jump from zero index on the last and back again
+
+##Example:
 
     /* create inventory for game */ 
-
     var Axe = $('Axe'), Potion = $('Potion'); MagicBook = $('MagicBook');
     var inventory = [Axe, Potion, MagicBook];
 
@@ -57,17 +98,7 @@ How to use
     active = activeSlot.next(), activeSlot.next();
 
 
-Create iterator
------------------
 
-    [1,2,3].iterator(); // Will return iterator.
-
-Options of iterator
------------------
-* pit    - Allow to select null position, when iterating. Null position selected only
-           when you create iterator or when you will select wrong index(like null, 'asd', NaN..),
-           or when you will you use rewind method.
-* limits - Not allow to jump from zero index on the last and back again
 
 Methods of iterator
 -----------------
