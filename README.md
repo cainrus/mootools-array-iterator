@@ -23,9 +23,6 @@ Methods of iterator
 
 How to use
 ----------
-* You'll need an array with test data:
-
-	var collection = [1,2,3,4,5];
 
 * Create iterator( you can create a few instances ):
 
