@@ -4,7 +4,7 @@ Array iterator
 This plugin provides functionality for array iteration with php like methods (next, prev, current, key, end, reset, rewind).
 And some more functionality.
 
-![Screenshot](http://farm5.static.flickr.com/4084/5090601279_6bb2f58b54.jpg)
+![Screenshot](http://farm5.static.flickr.com/4149/5094127748_c6a3bc7d98_m.jpg)
 
 You can create new Lighthouse tickets here:
     http://cainrus.lighthouseapp.com/projects/62133/mootools-array-iterator
