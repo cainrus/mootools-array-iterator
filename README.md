@@ -27,6 +27,7 @@ How to use
 
 * Create iterator( you can create a few instances ):
 
+        var collection = [1,2,3,4,5];
         var iterator = collection.iterator(options);
 
 * Now you can easily iterate that array:
