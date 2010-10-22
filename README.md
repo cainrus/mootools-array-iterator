@@ -8,6 +8,7 @@ And some more functionality.
 
 * You can create new Lighthouse tickets here: <http://cainrus.lighthouseapp.com/projects/62133/mootools-array-iterator>
 * Github: <http://github.com/cainrus/mootools-array-iterator/>
+* Plugin homepage: <http://mootools.net/forge/p/array_iterator>
 
 Methods of iterator
 -----------------
