@@ -91,7 +91,7 @@ Example
     var activeSlot = inventory.iterator({
       // Allow to select null position, when iterating. Null position selected only
       // when you create iterator or when you will select wrong index(like null, 'asd', NaN..),
-      // or when you will you use rewind method.
+      // or when you will use rewind method.
       pit : true, // By default
       // Not allow to jump from zero index on the last and back again
       limits: false // By default
@@ -99,7 +99,7 @@ Example
 
     var index, active;
     index = activeSlot.key(); // Index of selected item
-    active = activeSlot.current(); // Index of selected item
+    active = activeSlot.current(); // value of selected item
     console.log(index); // null, because there is nothing selected on start
     console.log(active); // null, because there is nothing selected on start
 
@@ -109,7 +109,7 @@ Example
     }
 
     // Same backwards
-    while (active = activeSlot.next()){
+    while (active = activeSlot.prev()){
       active.makeSomething;
     }
     
