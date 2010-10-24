@@ -16,12 +16,14 @@ provides:
  - Array.iterator
  - Iterator
  - Iterator.ref
+ - Iterator.range
  - Iterator.key
  - Iterator.rewind
  - Iterator.reset
  - Iterator.prev
  - Iterator.next
  - Iterator.end
+ - Iterator.slide
 
 ...
 */
@@ -37,7 +39,7 @@ var Util = {
         return this.Data[key];
     },
     setData: function(key, value) {
-        this.Data[key] = value;
+        return this.Data[key] = value;
         
     }
 };
@@ -46,123 +48,119 @@ var Util = {
 
 // Iterator Class
 var Iterator = new Class({
+    // Settings
     Implements  : [Options],
     options     : {
-        pit         : true, // allow null-exit
-        limits      : false //
+        // Allows the participation of null in iteration of stack, otherwise only at start and manual.
+        pit         : true,
+        // Allows to limit movement when reaches the edges
+        limits      : false,
+        // Allows to ignore indexes not in range
+        min: -1,
+        max: -1
         // TODO:
         // 1. option pass: array, keys to pass.
-        // 2. option min: int, minimal key alowed
-        // 3. option max: int, maximum key alowed
-
     },
+    // Constructor
     initialize: function(ref, options){
         this.setOptions(options);
         // Unique ID.
         var getUid = function(uid){return uid}.pass([Util.getUniqueId()]);
         // Link to same instance of array.
         this.ref = function(){return this;}.bind(ref);
-
         // Position Setter
         this.jump = function(key){
-            if ( typeof(key) === "undefined" ) return this;
-            // Add positive number or null, if key presents, and return self instance.
-            key = parseInt(key,10);
-            // If key is invalid or out of range, then it should be null.
-            if (isNaN(key) || key < 0 || key > this.ref().length - 1) key = null;
-	    Util.setData(getUid(), key);
-	    return key;
+            // check key
+            key = this.valid(key);
+            return Util.setData(getUid(), key);
         };
-        
         // Position Getter
-        this.key = function(uid){
-            var key = Util.getData(uid);
-            return (typeof(key) === "undefined") ? null : key;
-        }.pass(getUid());
-
-
+        this.key = function(){
+            var uid = getUid(), key = this.valid(Util.getData(uid));
+            return Util.setData(uid, key);
+        };
     },
-
-    // Move cursor to the first position
+    // key validator
+    valid: function(){
+        // base checks
+        var length = this.ref().length;
+        var key = (arguments.length>0) ? Number.from(arguments[0]) : this.key();
+        // empty array or key checks
+        if (key === null || length === 0) return null;
+        // Negative to positive
+        if (key < 0) key = this.ref().length+key;
+        // limits checks
+        if (key<0 || key > length-1) return null;
+        // complex range checks
+        var range = function(side){ return (side < 0) ? null : side.limit(0, length);}
+        var min = range(this.options.min), max = range(this.options.max);
+        if ((min && key < min)||(max && key > max)) return null;
+        return key;
+    },
+    // move cursor to minimal allowed position
     reset: function(){
-        var key = this.jump(0);
-        return this.current(key);
+        var range = this.range(), key = (range.length) ? range[0] : null;
+        return this.jump(key), this.current(key);
     },
-
-    // Move cursor out
+    // Move cursor out, to null
     rewind: function(){
-        var key =  this.jump(null);
-        return this.current(key);
+        return this.jump(null);
     },
+    // Move cursor to maximum allowed position
     end: function(){
-        var key = null, length = this.ref().length;
-        if (length) {
-            key = length - 1;
-        }
-        key = this.jump(key);
-        return this.current(key);
+        var range = this.range(), key = (range.length) ? range.pop() : null;
+        return this.jump(key), this.current(key);
     },
+    // Move cursor next
     next: function() {
         return this.slide(1);
     },
-
+    // Move cursor back
     prev: function(){
        return this.slide(-1);
     },
-
     // Return selected array value
     current: function(){
-        var key = (arguments.length) ? arguments[0] : this.key();
+        var key = arguments[0] || this.key();
         return (key === null) ? null : this.ref()[key];
     },
-
-
-    // Slide to
+    // Move with offset back or forward
     slide: function(offset){
-        var key = this.key(), length = this.ref().length;
-        // if filled array and valid offset
-        var pattern = /^(-|\+)?\d+$/;
-        if (length && pattern.test(offset)) {
-            var unit = (offset < 0) ? -1 : 1;
-            var maxKey = length - 1;
-            var limit = this.options.limit, pit =  this.options.pit;
-
-            while (offset) {
-                if (unit > 0) {
-                    if (key === null) key = 0;
-                    else if (key!==  maxKey) key++;
-                    else if ( key >= maxKey) {
-                        if (limit && pit) key = maxKey;
-                        if (!limit && !pit) key = 0;
-                        if (!limit && pit) key = null;
-                    }
-                }
-                else if (unit < 0) {
-                    if (key >= 1) key--;
-                    else if ( key < 1 ) {
-                        if (!limit) {
-                            if (key === null) {key = maxKey; }
-                            else if (pit) { key = null; }
-                            else if (!pit) { key = maxKey; }
-                        } else if (limit) {
-                            if (pit) { key = null; }
-                            else if (!pit) { key = 0; }
-                        }
-                    }
-                }
-
-                if (limit && pit && key === maxKey) key = maxKey;
-                
-                offset = offset - unit;
-            }
-        } else {
-            key = null;
-        }
-
-        key = this.jump(key);
-        return this.current(key);
+        var range = this.range(), key = this.key(); offset = Number.from(offset);
+        var limit = this.options.limits, pit = this.options.pit;
+        // Exit with null result if range or offset is invalid .
+        if (!range.length||offset===null) { this.jump(null); return null; }
+        if (offset===0) return this.current();
+        // Pit option setup.
+        if (pit) range.unshift(null);// Add null to map of indexes if pit is enabled
+        // Move cursor from not existing index (null)
+        if (pit) key = (key === null) ? 0 : range.indexOf(String.from(key));
+        else if (offset>0) key = (key === null) ? (offset--,0) :range.indexOf(String.from(key));
+          else
+              key = (key === null) ? 0 : range.indexOf(String.from(key));
+       // Post process by limit option.
+       if (!limit && offset.abs() >= range.length) {offset = offset%range.length;}
+       key = key + offset;
+       var max = range.length-1;
+       if (limit) {
+           if (key > max) key = max;
+           if (key < 0) key = 0;
+       } else {
+           if (key > max) key = 0 + (key-max-1);
+           if (key < 0) key =  max-(0-key-1);
+       }
+       key = range[key];
+       this.jump(key);
+       return Number.from(this.ref()[key]);
+    },
+    // Return range
+    range: function(){
+        var array = this.ref(), length = array.length-1;
+        if (length<0) return []; // empty array ~ empty range
+        var min = this.options.min.limit(0, length);
+        var max = this.options.max.limit(0,length) || length;
+        return Object.keys(array).slice(min, max+1);
     }
-
 });
 
 Array.implement({
@@ -173,4 +171,3 @@ Array.implement({
 
 
 })();
-
