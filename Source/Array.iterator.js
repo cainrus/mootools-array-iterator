@@ -24,6 +24,7 @@ provides:
  - Iterator.next
  - Iterator.end
  - Iterator.slide
+ - Iterator.valid
 
 ...
 */
