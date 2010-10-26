@@ -22,14 +22,15 @@ Methods of iterator
 * slide  - select every X index and return it, can be positive or negative
 * key    - return active key (number or null)
 * ref    - link to original array
+* range  - return range of array
 
 How to use
 ----------
 
-* Create iterator( you can create a few instances ):
+* Create array and iterator( you can create a few instances of it ):
 
-        var collection = [1,2,3,4,5];
-        var iterator = collection.iterator(options);
+        var collection = [1,2,3,4,5]; // array
+        var iterator = collection.iterator(options); // iterator
 
 * Now you can easily iterate that array:
 
@@ -41,14 +42,19 @@ How to use
         console.log(iterator.slide(-2)); // 2
         console.log(iterator.rewind());  // null
 
-* You can get array:
+* You can get array from iterator:
 
         console.log(iterator.ref());     // [1,2,3,4,5]
+        console.log(iterator.ref()===collection) // true
 
-* You can get pointer of the iterator:
+* You can get pointer from the iterator:
 
         console.log('value = ' + iterator.jump(2)); // value = 3
         console.log('key = ' + iterator.key());     // key = 4
+
+* Try to select penultimate value:
+        console.log(iterator.jump(-2));   // 4
+        iterator.end(); console.log(iterator.prev());   // 4, same thing
 
 * Try to play with _pit_ option:
 
@@ -73,12 +79,23 @@ How to use
         console.log(iterator.next());                 // 3
         console.log(iterator.next());                 // 3
 
+* Try to designate boundaries of iterator with _min_ & _max_ options:
+        iterator.options.min = 2;
+        iterator.options.max = 3;
+        console.log(iterator.reset());                // 2
+        console.log(iterator.next());                 // 3
+        console.log(iterator.next());                 // 3
+        iterator.options.limits = false;
+        console.log(iterator.next());                 // 2
+
 Options of iterator
 -----------------
 * pit    - Allow to select null position, when iterating. Null position selected only
 when you create iterator or when you will select wrong index(like null, 'asd', NaN..),
 or when you will you use rewind method.
 * limits - Not allow to jump from zero index on the last and back again
+* min    - Minimum allowed index, you can't select index less than it.
+* max    - Maximum allowed index, you can't select index more than it.
 
 Example
 -----------------
@@ -125,6 +142,7 @@ Example
     
     // try to select every second item in inventory
     inventory.push(Coat, Sword, Lamp); // Now: Axe, Potion, MagicBook, Coat, Sword, Lamp
+    activeSlot.slide(2);
     active = activeSlot.slide(2);
     // OR
     active = activeSlot.next(), activeSlot.next();
