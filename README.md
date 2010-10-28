@@ -17,12 +17,13 @@ Methods of iterator
 * end    - select last index and return it
 * next   - select next indext and return it
 * prev   - select preverious index and return it
-* rewind - select null index
-* jump   - select index and return value on index
-* slide  - select every X index and return it, can be positive or negative
-* key    - return active key (number or null)
-* ref    - link to original array
-* range  - return range of array
+* rewind - Select null index.
+* jump   - Select index and return value.
+* slide  - Jump over passed offset and return value. Can be positive or negative.
+* key    - return active key (number or null if not isset or not allowed)
+* ref    - return original array.
+* range  - return array of indexes. It will contain from _min_ to _max_ range, without indexes in _pass_ option.
+* valid  - return active key or null if index is not valid(null, not in min-max range or not allowed with _pass_ option). You can validate with this method active key or any passed index.
 
 How to use
 ----------
