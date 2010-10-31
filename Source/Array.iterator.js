@@ -52,16 +52,15 @@ var Iterator = new Class({
     // Settings
     Implements  : [Options],
     options     : {
-        // Allows the participation of null in iteration of stack, otherwise only at start and manual.
-        pit         : true,
-        // Allows to limit movement when reaches the edges
+        // Force null-exit from iteration after last or before first index.
+        pit         : false,
+        // Force limit iterator movement after last or before first index.
         limits      : false,
-        /* min int,
-        *  max int,
-        */
-        // Allows to ignore indexes not in range
-        // TODO:
-        // 1. option pass: array, keys to pass.
+        // Minimum allowed index.
+        // min int,
+        // Maximum allowed index.
+        // max int,
+        // Indexes in pass option will not be iterated.
         pass:[]
     },
     // Constructor
