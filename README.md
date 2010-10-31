@@ -153,11 +153,9 @@ Example
     }); 
 
     // Try to log all items in inventory
-    activeSlot.reset();
-    while (activeSlot.valid()) {
-        console.log(activeSlot.current());
-        activeSlot.next();
-    }
+    do {
+        console.log(activeSlot.next());
+    } while (activeSlot.valid());
 
     // reset to the null index when yo need it
     Game.addEvent('inventoryCreate', function(){
