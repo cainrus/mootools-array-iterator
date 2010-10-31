@@ -41,7 +41,7 @@ var Util = {
     },
     setData: function(key, value) {
         return this.Data[key] = value;
-        
+
     }
 };
 
@@ -108,7 +108,7 @@ var Iterator = new Class({
     },
     // move cursor to minimal allowed position
     reset: function(){
-        var range = this.range(), key = (range.length) ? range[0] : null;
+        var range = this.range(1), key = (range.length) ? range[0] : null;
         return this.jump(key), this.current(key);
     },
     // Move cursor out, to null
@@ -117,7 +117,7 @@ var Iterator = new Class({
     },
     // Move cursor to maximum allowed position
     end: function(){
-        var range = this.range(), key = (range.length) ? range.pop() : null;
+        var range = this.range(1), key = (range.length) ? range.pop() : null;
         return this.jump(key), this.current(key);
     },
     // Move cursor next
@@ -135,40 +135,45 @@ var Iterator = new Class({
     },
     // Move with offset back or forward [,from index]
     slide: function(offset, from){
-        var range = this.range().invoke('toInt'), key = [from,this.key()].pick();
+        var range = this.range(1).invoke('toInt'), key = [Number.from(from),this.key()].pick(), offset = Number.from(offset);
         var limit = this.options.limits, pit = this.options.pit, pass = this.options.pass;
-        // Exit with null result if range or offset is invalid .
-        if (!range.length||offset===null||(pit&&key===null)) return this.jump(null);
+        // Exit with null result if: range or offset is invalid, no way to move pointer.
+        if (!range.length||offset===null||(limit&&key===null&&offset<0)) return this.jump(null);
         if (offset===0) return this.current();
+        if (pit) range.unshift(null);
+        var max = range.length-1;
         // Move cursor from not existing index (null)
-        var index = range.indexOf(key);
-        if (pit) key = index;
-        else if (offset>0) key = (key === null) ? (offset--,0) :index;
-          else key = (key === null) ? 0 : index;
+        if (key===null) {
+            key = (pit) ? 1 : 0;
+            if (limit) offset--, key = (pit) ? 1 : 0;
+            else if (offset<0) offset++, key = max;
+            else offset--;
+        } else
+            key = range.indexOf(key);
        // Reduce offset
-       if (!pit && !limit && offset.abs() >= range.length) {offset = offset%range.length;}
+       if (!pit && !limit && offset.abs() >= range.length) offset = offset%range.length;
        // Move key
        key = key + offset;
        // if key is out of range
-       var max = range.length-1, more = key > max, less = key < 0;
+       var  more = key > max, less = key < 0;
        if (more || less) {
-           if (pit) key = null;
+           if (pit&&limit) key = null;
            else if (more) key = (limit) ? max : key-max-1;
            else if (less) key = (limit) ? 0 : key+max+1;
        }
-
        key = range[key]; this.jump(key);
        return this.current();
     },
     // Return range
     range: function(){
-        var array = this.ref(), length = array.length-1, keys = Object.keys(array);
+        var array = this.ref(), length = array.length-1, keys = Object.keys(array), public=!arguments[0];
         with(this.options){
             if (length<0) return []; // empty array ~ empty range
             pass=Array.from(pass).invoke('toString');
             [min,max].each(function(edge){[Number.from(edge),0].pick().limit(0,length)});
             range = (min>max) ? keys.slice(0,max.toInt()+1).combine(keys.slice(min,max+1)) : keys.slice(min, max+1);
             if(pass.length>0) pass.each(function(el){range=range.erase(el);});
+            if (public) range = range.map(function(index){return array[index];});
             return range;
         }
     }
