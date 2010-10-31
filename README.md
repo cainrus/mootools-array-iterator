@@ -31,7 +31,7 @@ How to use
 
         #html
         <script type="text/javascript" src="mootools.js"></script> 
-        <script type="text/javascript" src="Array.Iterator.js"></script
+        <script type="text/javascript" src="Array.Iterator.js"></script>
 
 * Create array and iterator( you can create a few instances of it:
 
