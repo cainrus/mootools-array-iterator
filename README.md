@@ -125,6 +125,7 @@ Options of iterator
 * min    - Minimum allowed index, you can't select index less than it.
 * max    - Maximum allowed index, you can't select index more than it.
 * pass   - index or array of indexes to skip.
+* chains - Allow ability to chain method calls of movement
 
 Example
 -----------------
