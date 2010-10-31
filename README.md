@@ -66,6 +66,7 @@ How to use
 * Try to get penultimate value:
 
         #js
+        iterator.reset();
         iterator.jump(-2); console.log(iterator.current()); // 4
         iterator.end(); console.log(iterator.prev());       // 4, same thing
 
