@@ -28,17 +28,21 @@ How to use
 ----------
 
 * Add some lines in the head of your HTML document.
+
+        #html
         <script type="text/javascript" src="mootools.js"></script> 
         <script type="text/javascript" src="Array.Iterator.js"></script
 
 * Create array and iterator( you can create a few instances of it:
 
+        #js
         var collection = [1,2,3,4,5];                 // array
         var iterator = collection.iterator(options);  // iterator
         var iterator2 = collection.iterator(options); // another iterator
 
 * Now you can easily iterate that array:
 
+        #js
         console.log(iterator.next());    // 1
         console.log(iterator.end());     // 5
         console.log(iterator.prev());    // 4
@@ -49,21 +53,25 @@ How to use
 
 * You can get array from iterator:
 
+        #js
         console.log(iterator.ref());             // [1,2,3,4,5]
         console.log(iterator.ref()===collection) // true
 
 * You can get pointer from the iterator:
 
+        #js
         console.log('value = ' + iterator.jump(2)); // value = 3
         console.log('key = ' + iterator.key());     // key = 2
 
 * Try to get penultimate value:
 
+        #js
         iterator.jump(-2); console.log(iterator.current()); // 4
         iterator.end(); console.log(iterator.prev());       // 4, same thing
 
 * Try to play with _pit_ option:
 
+        #js
         var collection = [1,2,3]
         var iterator = collection.iterator({pit : true});
         console.log(iterator.next());                 // 1
@@ -80,6 +88,7 @@ How to use
 
 * Try to play with _limits_ option:
 
+        #js
         iterator.options.limits = true;
         console.log(iterator.jump(0));                // 1
         console.log(iterator.next());                 // 2
@@ -89,6 +98,7 @@ How to use
 
 * Try to designate boundaries of iterator with _min_ & _max_ options:
 
+        #js
         iterator.options.min = 1;
         iterator.options.max = 2;
         console.log(iterator.reset());                // 2
@@ -99,6 +109,7 @@ How to use
 
 * Try to designate boundaries of iterator with _min_ & _max_ options:
 
+        #js
         var collection = [1,2,3,4,5]
         var iterator = collection.iterator({pass:2});
         console.log(iterator.reset());                // 1
@@ -113,6 +124,7 @@ How to use
 
 * Try ability to chain method calls(jump, end, reset, rewind, next, prev, slide):
 
+        #js
         var collection = [1,2,3,4,5]
         var iterator = collection.iterator({chains:true});
         iterator.reset().next().next().current();         // 3
@@ -130,6 +142,7 @@ Options of iterator
 Example
 -----------------
 
+    #js
     /* create inventory for game */ 
     var inventory = [$('Axe'), $('Potion'), $('MagicBook')];
 
