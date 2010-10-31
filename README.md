@@ -31,7 +31,7 @@ How to use
         <script type="text/javascript" src="mootools.js"></script> 
         <script type="text/javascript" src="Array.Iterator.js"></script
 
-* Create array and iterator( you can create a few instances of it ):
+* Create array and iterator( you can create a few instances of it:
 
         var collection = [1,2,3,4,5];                 // array
         var iterator = collection.iterator(options);  // iterator
@@ -55,7 +55,7 @@ How to use
 * You can get pointer from the iterator:
 
         console.log('value = ' + iterator.jump(2)); // value = 3
-        console.log('key = ' + iterator.key());     // key = 4
+        console.log('key = ' + iterator.key());     // key = 2
 
 * Try to get penultimate value:
 
