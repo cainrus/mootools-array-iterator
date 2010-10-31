@@ -61,7 +61,9 @@ var Iterator = new Class({
         // Maximum allowed index.
         // max int,
         // Indexes in pass option will not be iterated.
-        pass:[]
+        pass:[],
+        // Allow ability to chain method calls of movement
+        chains:false
     },
     // Constructor
     initialize: function(ref, options){
@@ -72,9 +74,9 @@ var Iterator = new Class({
         this.ref = function(){return this;}.bind(ref);
         // Position Setter
         this.jump = function(key){
-            // check key
-            key = this.valid(key);
-            return Util.setData(getUid(), key);
+            // check key & move pointer
+            key = Util.setData(getUid(), this.valid(key));
+            return (this.options.chains) ? this : this.current(key);
         };
         // Position Getter
         this.key = function(){
@@ -109,7 +111,7 @@ var Iterator = new Class({
     // move cursor to minimal allowed position
     reset: function(){
         var range = this.range(1), key = (range.length) ? range[0] : null;
-        return this.jump(key), this.current(key);
+        return this.jump(key); 
     },
     // Move cursor out, to null
     rewind: function(){
@@ -161,8 +163,7 @@ var Iterator = new Class({
            else if (more) key = (limit) ? max : key-max-1;
            else if (less) key = (limit) ? 0 : key+max+1;
        }
-       key = range[key]; this.jump(key);
-       return this.current();
+       return this.jump(range[key]);
     },
     // Return range
     range: function(){
