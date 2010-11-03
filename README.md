@@ -108,7 +108,7 @@ How to use
         iterator.options.limits = false;
         console.log(iterator.next());                 // 2
 
-* Try to designate boundaries of iterator with _min_ & _max_ options:
+* Try to exclude some indexes from iteration with _pass_ option:
 
         #js
         var collection = [1,2,3,4,5]
