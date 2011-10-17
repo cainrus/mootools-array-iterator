@@ -1,31 +1,35 @@
 (function(){
 
 
-// Iterator Common utilites
+// Iterator common private utilites
 var Util = {
     uid : Date.now(),
+    // Function will return real uniq uid for session
     getUniqueId : function() {return (this.uid++).toString(36);},
     Data: {},
+    // Get from private storage
     getData: function(key) {
         return this.Data[key];
     },
+    // Set to private storage
     setData: function(key, value) {
         this.Data[key] = value;
-        
     }
 };
 
 
 
-
+// Interator class
 var Iterator = new Class({
     Implements: [Options],
     options: {
-        pit    : true,
-        limits: false // limit pointer with positions which exists
-        //round: false // forbid to go by cyrcles
+        pit    : true, // Stop iteration on last and first index (null)
+        limits : false // limit pointer with positions which exists
+        // TODO: implement
+        // round: false // forbid to go round
 
     },
+    // constructor
     initialize: function(ref, options){
         this.setOptions(options);
         // private function, it returns unique ID
@@ -33,7 +37,6 @@ var Iterator = new Class({
         // link to same instance of array
         // only get, no way to change\replace it
         this.ref = function(){return this;}.bind(ref);
-
         // Position Setter
         this.jump = function(key){
             if ( typeof(key) === "undefined" ) return this;
@@ -65,6 +68,8 @@ var Iterator = new Class({
         var key =  this.jump(null);
         return this.watch(key)[0];
     },
+    
+    // Move cursor to the last position
     end: function(){
         var key = null, length = this.ref().length;
         if (length) {
@@ -73,10 +78,13 @@ var Iterator = new Class({
         key = this.jump(key);
         return this.watch(key)[0];
     },
+    
+    // Move cursor next
     next: function() {
         return this.slide(1);
     },
-
+	
+    // move cursor back
     prev: function(){
        return this.slide(-1);
     },
@@ -87,8 +95,8 @@ var Iterator = new Class({
             return this.watch(key)[0];
     },
 
-
-
+    // Move cursor by offset
+    // can be any positive value or negative
     slide: function(offset){
         var key = this.key(), length = this.ref().length;
         // if filled array and valid offset
@@ -134,7 +142,7 @@ var Iterator = new Class({
         return this.watch(key)[0];
     },
 
-
+    // return specified values
     watch: function(indexes){
         indexes = (typeof indexes === 'array') ? indexes : [indexes];
         var i, value, values = [];
@@ -149,6 +157,8 @@ var Iterator = new Class({
 
 });
 
+// Implement iterator to class
+// You can get iterator with special function named "iterator" now!
 Array.implement({
     iterator: function(options){
         return new Iterator(this, options);
